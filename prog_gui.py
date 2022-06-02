@@ -22,6 +22,8 @@ def text_edit():
 
     for i in dictionary:
         text=text.replace(i,dictionary[i])
+    txt_edit.delete('1.0', tk.END)
+    txt_edit.insert(tk.END, text)
 
     print(text)
 
@@ -75,7 +77,7 @@ window.columnconfigure(1, minsize=800, weight=1)
 txt_edit = tk.Text(window)
 frm_buttons = tk.Frame(window, relief=tk.RAISED, bd=2)
 btn_open = tk.Button(frm_buttons, text="Load Text", command=open_file)
-btn_csv = tk.Button(frm_buttons, text="Load CSV", command=open_csv)
+btn_csv =  tk.Button(frm_buttons, text="Load CSV", command=open_csv)
 btn_repl = tk.Button(frm_buttons, text="Replace words", command=text_edit)
 btn_save = tk.Button(frm_buttons, text="Save As ...", command=save_file)
 
