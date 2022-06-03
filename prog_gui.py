@@ -11,21 +11,23 @@ dictionary = {
               "poezda":"prjatki",
                                  }
 
+#Get text from Editor
+def retrieve_input():
+    input = txt_edit.get("1.0",tk.END)
+    return input
 
-
+#Words replace function 
 def text_edit():
-    with open ("hui.txt") as t:
-        text = t.readlines()[0]
-        print(text)
-        t.close()
-
-
+    text = retrieve_input()
+    
     for i in dictionary:
-        text=text.replace(i,dictionary[i])
+        text = text.replace(i,dictionary[i])
+    txt_edit.configure(state='normal')
     txt_edit.delete('1.0', tk.END)
     txt_edit.insert(tk.END, text)
+    txt_edit.configure(state='disabled')
 
-    print(text)
+    #print(text)
 
 def open_file():
     """Open a file for editing."""
@@ -38,6 +40,7 @@ def open_file():
     with open(filepath, mode="r", encoding="utf-8") as input_file:
         text = input_file.read()
         txt_edit.insert(tk.END, text)
+        #txt_edit.configure(state='disabled') #read mode , edit mode disbled
     window.title(f"Open text to edit - {filepath}")
 
 
