@@ -1,15 +1,25 @@
 #!/usr/bin/env python3
 
+import csv
 import tkinter as tk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 
+new_path = open("mytest.csv", "w")
 
-dictionary = {
+file_dictionary = {
               "Hui":"Vasiliy",
               "pizda":"Nadezda",
               "poezda":"prjatki",
                                  }
+
+z = csv.writer(new_path)
+for new_k, new_v in file_dictionary.items():
+    z.writerow([new_k, new_v])
+
+new_path.close()
+
+
 
 #Get text from Editor
 def retrieve_input():
@@ -20,8 +30,8 @@ def retrieve_input():
 def text_edit():
     text = retrieve_input()
     
-    for i in dictionary:
-        text = text.replace(i,dictionary[i])
+    for i in file_dictionary:
+        text = text.replace(i,file_dictionary[i])
     txt_edit.configure(state='normal')
     txt_edit.delete('1.0', tk.END)
     txt_edit.insert(tk.END, text)
@@ -38,9 +48,10 @@ def open_file():
         return
     txt_edit.delete("1.0", tk.END)
     with open(filepath, mode="r", encoding="utf-8") as input_file:
+        txt_edit.configure(state='normal')
         text = input_file.read()
         txt_edit.insert(tk.END, text)
-        #txt_edit.configure(state='disabled') #read mode , edit mode disbled
+        txt_edit.configure(state='disabled') #read mode , edit mode disbled
     window.title(f"Open text to edit - {filepath}")
 
 
