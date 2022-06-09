@@ -3,6 +3,7 @@
 import csv
 import tkinter as tk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter import Frame
 
 #Get text from Editor
 def text_input():
@@ -57,7 +58,6 @@ def open_csv():
     with open(filepath, mode="r", encoding="utf-8") as input_file:
         text = input_file.read()
         csv_edit.insert(tk.END, text)
-    window_csv.title(f"words to replace")
 
 
 #############################3
@@ -95,16 +95,14 @@ def save_file():
 
 window = tk.Tk()
 window.title("Simple Words Replacer")
-window.rowconfigure(0, minsize=800, weight=1)
-window.columnconfigure(1, minsize=800, weight=1)
+window.rowconfigure(0, minsize=800, weight=0)
+window.columnconfigure(1, minsize=400, weight=0)
 
-window_csv = tk.Tk()
-window_csv.title("Simple Words Replacer")
-window_csv.rowconfigure(0, minsize=800, weight=0)
-window_csv.columnconfigure(0, minsize=50, weight=0)
+csv_frame = tk.Frame(window)
+csv_frame.columnconfigure(0, minsize=50, weight=0)
 
 txt_edit = tk.Text(window)
-csv_edit = tk.Text(window_csv)
+csv_edit = tk.Text(window)
 frm_buttons = tk.Frame(window, relief=tk.RAISED, bd=2)
 csv_buttons = tk.Frame(window, relief=tk.RAISED, bd=2)
 btn_open = tk.Button(frm_buttons, text="Load Text", command = open_file)
@@ -118,11 +116,10 @@ btn_repl.grid(row=2, column=0, sticky="ew", padx=5, pady=5)
 btn_save.grid(row=3, column=0, sticky="ew", padx=5, pady=5)
 
 frm_buttons.grid(row=0, column=0, sticky="ns")
-csv_buttons.grid(row=0, column=2, sticky="ns")
+csv_buttons.grid(row=0, column=3, sticky="ns")
 txt_edit.grid(row=0, column=1, sticky="nsew")
-csv_edit.grid(row=0, column=1, sticky="nsew")
+csv_edit.grid(row=0, column=2, sticky="nsew")
 
-window_csv.mainloop()
 window.mainloop()
 
 

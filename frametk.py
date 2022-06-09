@@ -1,16 +1,36 @@
-import tkinter as tk
+# Import the library tkinter
+from tkinter import *
 
-window = tk.Tk()
+# Create a GUI app
+app = Tk()
 
-frame1 = tk.Frame(window, bg='gold')
-frame1.pack(fill=tk.X)
-frame1.columnconfigure(0, weight=1)
-frame2 = tk.Frame(window, padx=15, pady=15)
-frame2.pack()
+# Give a title to your app
+app.title("Vinayak App")
 
-frame1label1 = tk.Label(frame1, bg='gold', text='Top label')
-frame1label1.grid(row=0, column=0)
-frame2label = tk.Label(frame2, text='Bottom label')
-frame2label.pack()
+# Constructing the first frame, frame1
+frame1 = LabelFrame(app, text="Fruit", bg="green",
+                    fg="white", padx=15, pady=15)
 
-window.mainloop()
+# Displaying the frame1 in row 0 and column 0
+frame1.grid(row=0, column=0)
+
+# Constructing the button b1 in frame1
+b1 = Button(frame1, text="Apple")
+
+# Displaying the button b1
+b1.pack()
+
+# Constructing the second frame, frame2
+frame2 = LabelFrame(app, text="Vegetable", bg="yellow", padx=15, pady=15)
+
+# Displaying the frame2 in row 0 and column 1
+frame2.grid(row=0, column=1)
+
+# Constructing the button in frame2
+b2 = Button(frame2, text="Tomato")
+
+# Displaying the button b2
+b2.pack()
+
+# Make the loop for displaying app
+app.mainloop()
