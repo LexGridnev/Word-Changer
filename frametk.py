@@ -1,36 +1,98 @@
-# Import the library tkinter
-from tkinter import *
+import tkinter as tk
 
-# Create a GUI app
-app = Tk()
 
-# Give a title to your app
-app.title("Vinayak App")
+class RoundedButton(tk.Canvas):
 
-# Constructing the first frame, frame1
-frame1 = LabelFrame(app, text="Fruit", bg="green",
-                    fg="white", padx=15, pady=15)
+    def __init__(self, master=None, text:str="", radius=25, btnforeground="#000000", btnbackground="#ffffff", clicked=None, *args, **kwargs):
+        super(RoundedButton, self).__init__(master, *args, **kwargs)
+        self.config(bg=self.master["bg"])
+        self.btnbackground = btnbackground
+        self.clicked = clicked
 
-# Displaying the frame1 in row 0 and column 0
-frame1.grid(row=0, column=0)
+        self.radius = radius        
+        
+        self.rect = self.round_rectangle(0, 0, 0, 0, tags="button", radius=radius, fill=btnbackground)
+        self.text = self.create_text(0, 0, text=text, tags="button", fill=btnforeground, font=("Times", 30), justify="center")
 
-# Constructing the button b1 in frame1
-b1 = Button(frame1, text="Apple")
+        self.tag_bind("button", "<ButtonPress>", self.border)
+        self.tag_bind("button", "<ButtonRelease>", self.border)
+        self.bind("<Configure>", self.resize)
+        
+        text_rect = self.bbox(self.text)
+        if int(self["width"]) < text_rect[2]-text_rect[0]:
+            self["width"] = (text_rect[2]-text_rect[0]) + 10
+        
+        if int(self["height"]) < text_rect[3]-text_rect[1]:
+            self["height"] = (text_rect[3]-text_rect[1]) + 10
+          
+    def round_rectangle(self, x1, y1, x2, y2, radius=25, update=False, **kwargs): # if update is False a new rounded rectangle's id will be returned else updates existing rounded rect.
+        # source: https://stackoverflow.com/a/44100075/15993687
+        points = [x1+radius, y1,
+                x1+radius, y1,
+                x2-radius, y1,
+                x2-radius, y1,
+                x2, y1,
+                x2, y1+radius,
+                x2, y1+radius,
+                x2, y2-radius,
+                x2, y2-radius,
+                x2, y2,
+                x2-radius, y2,
+                x2-radius, y2,
+                x1+radius, y2,
+                x1+radius, y2,
+                x1, y2,
+                x1, y2-radius,
+                x1, y2-radius,
+                x1, y1+radius,
+                x1, y1+radius,
+                x1, y1]
 
-# Displaying the button b1
-b1.pack()
+        if not update:
+            return self.create_polygon(points, **kwargs, smooth=True)
+        
+        else:
+            self.coords(self.rect, points)
 
-# Constructing the second frame, frame2
-frame2 = LabelFrame(app, text="Vegetable", bg="yellow", padx=15, pady=15)
+    def resize(self, event):
+        text_bbox = self.bbox(self.text)
 
-# Displaying the frame2 in row 0 and column 1
-frame2.grid(row=0, column=1)
+        if self.radius > event.width or self.radius > event.height:
+            radius = min((event.width, event.height))
 
-# Constructing the button in frame2
-b2 = Button(frame2, text="Tomato")
+        else:
+            radius = self.radius
 
-# Displaying the button b2
-b2.pack()
+        width, height = event.width, event.height
 
-# Make the loop for displaying app
-app.mainloop()
+        if event.width < text_bbox[2]-text_bbox[0]:
+            width = text_bbox[2]-text_bbox[0] + 30
+        
+        if event.height < text_bbox[3]-text_bbox[1]:  
+            height = text_bbox[3]-text_bbox[1] + 30
+        
+        self.round_rectangle(5, 5, width-5, height-5, radius, update=True)
+
+        bbox = self.bbox(self.rect)
+
+        x = ((bbox[2]-bbox[0])/2) - ((text_bbox[2]-text_bbox[0])/2)
+        y = ((bbox[3]-bbox[1])/2) - ((text_bbox[3]-text_bbox[1])/2)
+
+        self.moveto(self.text, x, y)
+
+    def border(self, event):
+        if event.type == "4":
+            self.itemconfig(self.rect, fill="#d2d6d3")
+            if self.clicked is not None:
+                self.clicked()
+
+        else:
+            self.itemconfig(self.rect, fill=self.btnbackground)
+
+def func():
+    print("Button pressed")
+
+root = tk.Tk()
+btn = RoundedButton(text="This is a \n rounded button", radius=100, btnbackground="#0078ff", btnforeground="#ffffff", clicked=func)
+btn.pack(expand=True, fill="both")
+root.mainloop()
