@@ -112,43 +112,66 @@ def save_file():
         output_file.write(text)
     window.title(f"Save edited text - {filepath}")
 
+def txt_undo():
+    txt_edit.configure(state='normal') 
+    txt_edit.edit_undo()
+    txt_edit.configure(state='disabled') 
+    print("txt_undo")
+
+def txt_redo():    
+    txt_edit.configure(state='normal') 
+    txt_edit.edit_redo()
+    txt_edit.configure(state='disabled') 
+    print("txt_redo")
+
 window = tk.Tk()
 window.title("Simple Words Replacer")
 window.rowconfigure(0, minsize=100, weight=0)
 window.columnconfigure(0, minsize=100, weight=0)
 
-txt_edit = tk.Text(window)
+txt_edit = tk.Text(window,undo = True)
 csv_edit = tk.Text(window,undo = True)
 
-frm_buttons = tk.Frame(window, relief=tk.GROOVE, bd=2)
-csv_buttons = tk.Frame(window, relief=tk.GROOVE, bd=2)
-und_buttons = tk.Frame(csv_buttons)
+frm_buttons = tk.Frame(window)
+csv_buttons = tk.Frame(window)
+csv_undored = tk.Frame(csv_buttons)
+frm_buttons = tk.Frame(window)
+frm_undored = tk.Frame(frm_buttons)
+
 
 btn_open = tk.Button(frm_buttons, text = "Load Text",     command = open_file)
 btn_repl = tk.Button(frm_buttons, text = "Replace words", command = text_edit)
 btn_save = tk.Button(frm_buttons, text = "Save As ...",   command = save_file)
 btn_csv  = tk.Button(csv_buttons, text = "Load CSV",      command = open_csv)
 btn_hl   = tk.Button(csv_buttons, text = "Highlight",     command = text_hl)
-btn_undo = tk.Button(und_buttons, text = "<",             command = csv_edit.edit_undo)
-btn_redo = tk.Button(und_buttons, text = ">",             command = csv_edit.edit_redo)
+btn_undo = tk.Button(csv_undored, text = "⊲",             command = csv_edit.edit_undo)
+btn_redo = tk.Button(csv_undored, text = "⊳",             command = csv_edit.edit_redo)
+btn_und  = tk.Button(frm_undored, text = "⊲",             command = txt_undo)
+btn_red  = tk.Button(frm_undored, text = "⊳",             command = txt_redo)
 
-btn_open.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
-btn_repl.grid(row=2, column=0, sticky="nsew", padx=5, pady=5)
+
+btn_open.grid(row=2, column=0, sticky="nsew", padx=5, pady=5)
+btn_repl.grid(row=3, column=0, sticky="nsew", padx=5, pady=5)
+btn_save.grid(row=4, column=0, sticky="nsew", padx=5, pady=5)
+
 btn_csv.grid (row=1, column=0, sticky="nsew", padx=5, pady=5)
-btn_hl.grid  (row=2, column=0, sticky="nsew", padx=5, pady=5)
-btn_save.grid(row=3, column=0, sticky="nsew", padx=5, pady=5)
+btn_hl.grid  (row=2, column=0, sticky="nsew",   padx=5, pady=5)
+
 
 btn_undo.grid(row=0, column=0, sticky="nsew",    padx=5, pady=5)
 btn_redo.grid(row=0, column=1, sticky="nsew",    padx=5, pady=5)
+btn_und.grid(row=0, column=0, sticky="ns",    padx=5, pady=5)
+btn_red.grid(row=0, column=1, sticky="ns",    padx=5, pady=5)
+
 
 frm_buttons.grid(row=0, column=0, sticky="nsew")
 csv_buttons.grid(row=0, column=3, sticky="nsew")
-und_buttons.grid(row=0, column=0, sticky="nsew")
-
+csv_undored.grid(row=0, column=0, sticky="nsew")
+frm_undored.grid(row=0, column=0, sticky="ns")
 
 txt_edit.grid(row=0, column=1, sticky="nsew")
 csv_edit.grid(row=0, column=2, sticky="nsew")
 
-window.after(50000, window.destroy)
+#window.after(50000, window.destroy)
 window.mainloop()
 
