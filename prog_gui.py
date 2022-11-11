@@ -22,7 +22,8 @@ def text_edit():
     file_dictionary = dict(file_csv)
     #print(file_dictionary)
     for i in file_dictionary:
-        text = text.replace(i,file_dictionary[i])
+        text = text.replace(i,file_dictionary[i].strip(" "))
+        
         txt_edit.delete('1.0', tk.END)
         txt_edit.insert(tk.END,text.replace(i,file_dictionary[i]))
 
@@ -69,6 +70,7 @@ def rvr_txt():
     text = [i.split(',') for i in csv_txt ]
     rvr_txt = [i[::-1] for i in text]
     csv_edit.delete('1.0', tk.END)
+    
     for i in rvr_txt:
         csv_edit.insert(tk.END, i[0].strip(" ") + "," + i[1].strip(" ") + " \n")
         
@@ -206,4 +208,3 @@ csv_edit.grid(row=0, column=2, sticky="nsew")
 
 #window.after(50000, window.destroy)
 window.mainloop()
-
