@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import csv
+import csv, string
 from gc import callbacks
 import tkinter as tk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
@@ -35,7 +35,6 @@ def text_edit():
     for target in file_hl:
         print(target)
         start_pos = txt_edit.search(target, '1.0', stopindex=tk.END)
-        
         if start_pos:
             end_pos = '{}+{}c'.format(start_pos, len(target))
             print('{!r}'.format(end_pos))
@@ -64,8 +63,23 @@ def text_hl():
         print(name,len(name))
         txt_edit.tag_config(name, foreground='red')
 
-
+def rvr_txt():
+    txt_edit.configure(state='normal') 
+    csv_txt = csv_edit.get("1.0",tk.END).strip('\n').split("\n", 2)
+    text = [i.split(',') for i in csv_txt ]
+    rvr_txt = [i[::-1] for i in text]
+    csv_edit.delete('1.0', tk.END)
+    for i in rvr_txt:
+        csv_edit.insert(tk.END, i[0].strip(" ") + "," + i[1].strip(" ") + " \n")
+        
     
+    if len(text) <= 0:
+        print(text,len(text))
+        csv_edit.delete('1.0', tk.END)
+
+    txt_edit.configure(state='disabled') 
+    print(text)
+    print(rvr_txt)
 
 def open_file():
     """Open a file for editing."""
@@ -83,6 +97,20 @@ def open_file():
         txt_edit.configure(state='disabled') #read mode , edit mode disbled
     window.title(f"Open text to edit - {filepath}")
 
+def is_csv(input_file):
+    try:
+        with open(input_file, newline='') as csvfile:
+            start = csvfile.read(4096)
+
+            # isprintable does not allow newlines, printable does not allow umlauts...
+            if not all([c in string.printable or c.isprintable() for c in start]):
+                return False
+            dialect = csv.Sniffer().sniff(start)
+            return True
+    except csv.Error:
+        # Could not get a csv dialect -> probably not a csv.
+        print("Could not get a csv dialect -> probably not a csv.")
+        return False
 
 def open_csv():
     """Open a CSV."""
@@ -92,11 +120,13 @@ def open_csv():
     )
     if not filepath:
         return
+    
     csv_edit.delete("1.0", tk.END)
 
     with open(filepath, mode="r", encoding="utf-8") as input_file:
         text = input_file.read()
-        csv_edit.insert(tk.END, text)
+        if is_csv(filepath):
+            csv_edit.insert(tk.END, text)
 
 
 def save_file():
@@ -116,13 +146,13 @@ def txt_undo():
     txt_edit.configure(state='normal') 
     txt_edit.edit_undo()
     txt_edit.configure(state='disabled') 
-    print("txt_undo")
+    #print("txt_undo")
 
 def txt_redo():    
     txt_edit.configure(state='normal') 
     txt_edit.edit_redo()
     txt_edit.configure(state='disabled') 
-    print("txt_redo")
+    #print("txt_redo")
 
 window = tk.Tk()
 window.title("Simple Words Replacer")
@@ -144,6 +174,7 @@ btn_repl = tk.Button(frm_buttons, text = "Replace words", command = text_edit)
 btn_save = tk.Button(frm_buttons, text = "Save As ...",   command = save_file)
 btn_csv  = tk.Button(csv_buttons, text = "Load CSV",      command = open_csv)
 btn_hl   = tk.Button(csv_buttons, text = "Highlight",     command = text_hl)
+btn_rvr  = tk.Button(csv_buttons, text = "Revert",        command = rvr_txt)
 btn_undo = tk.Button(csv_undored, text = "⊲",             command = csv_edit.edit_undo)
 btn_redo = tk.Button(csv_undored, text = "⊳",             command = csv_edit.edit_redo)
 btn_und  = tk.Button(frm_undored, text = "⊲",             command = txt_undo)
@@ -156,6 +187,7 @@ btn_save.grid(row=4, column=0, sticky="nsew", padx=5, pady=5)
 
 btn_csv.grid (row=1, column=0, sticky="nsew", padx=5, pady=5)
 btn_hl.grid  (row=2, column=0, sticky="nsew",   padx=5, pady=5)
+btn_rvr.grid (row=3, column=0, sticky="nsew",   padx=5, pady=5)
 
 
 btn_undo.grid(row=0, column=0, sticky="nsew",    padx=5, pady=5)

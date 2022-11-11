@@ -1,19 +1,13 @@
-# Import Module
-from tkinter import *
- 
-# Create Tkinter Object
-root = Tk()
- 
-# Set Geometry
-root.geometry("400x400")
- 
-# Frame 1
-frame1 = Frame(root,bg="black",width=500,height=300)
-frame1.pack()
- 
-# Frame 2
-frame2 = Frame(frame1,bg="white",width=100,height=100)
-frame2.pack(pady=20,padx=20)
- 
-# Execute Tkinter
-root.mainloop()
+def is_csv(infile):
+    try:
+        with open(infile, newline='') as csvfile:
+            start = csvfile.read(4096)
+
+            # isprintable does not allow newlines, printable does not allow umlauts...
+            if not all([c in string.printable or c.isprintable() for c in start]):
+                return False
+            dialect = csv.Sniffer().sniff(start)
+            return True
+    except csv.Error:
+        # Could not get a csv dialect -> probably not a csv.
+        return False
